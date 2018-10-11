@@ -10,16 +10,14 @@
 #include <unistd.h>
 
 TCPListener::TCPListener() {
-//    std::cout << "BOOM!";
     if (initialize(8000, "")) {
         std::cout << "Server initialized successfully!" << std::endl;
     }
     if (start()) {
         std::cout << "Server started successfully!" << std::endl;
     }
-//    std::cout << "AAAAAAAAA";
     m_masterSocket.setNonblock();
-    m_ioWorker.setMasterEvent(m_masterSocket);
+    m_ioServer.setMasterEvent(m_masterSocket);
 }
 
 TCPListener::TCPListener(unsigned short port, std::string ip)
@@ -55,6 +53,7 @@ bool TCPListener::initialize(unsigned short port = 8000, std::string ip = "")
 
 bool TCPListener::start()
 {
+
     bool listenFailed = listen(m_masterSocket.descriptor(),
                                SOMAXCONN); // 128
 
@@ -65,10 +64,7 @@ bool TCPListener::start()
     return !listenFailed;
 }
 
-void TCPListener::acceptData()
+void TCPListener::acceptData() // main magic happens there
 {
-    while (true) {
-        int eventsCount = m_ioWorker.listenEvents();
-        m_ioWorker.proccessEvents(eventsCount);
-    }
+    m_ioServer.start();
 }

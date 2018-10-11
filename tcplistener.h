@@ -4,7 +4,7 @@
 #include <netinet/in.h>
 #include <string>
 #include "Sockets/mastersocket.h"
-#include "ioworker.h"
+#include "ioserver.h"
 
 //TODO: remove copy possibility
 
@@ -20,7 +20,7 @@ public:
     void acceptData();
 
 private:
-    IOWorker m_ioWorker;
+    IOServer m_ioServer;
 
     sockets::MasterSocket m_masterSocket;
     sockaddr_in m_sockAddress;

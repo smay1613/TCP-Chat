@@ -6,9 +6,8 @@ using namespace std;
 
 int main()
 {
-    TCPListener tst;
-//    thread t1(&TCPListener::acceptData, &tst);
-    tst.acceptData();
-//    t1.join();
+    TCPListener mainListener;
+    mainListener.acceptData();
+
     return 0;
 }
