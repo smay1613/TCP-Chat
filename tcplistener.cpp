@@ -16,8 +16,8 @@ TCPListener::TCPListener() {
     if (start()) {
         std::cout << "Server started successfully!" << std::endl;
     }
-    m_masterSocket.setNonblock();
-    m_ioServer.setMasterEvent(m_masterSocket);
+//    m_masterSocket.setNonblock();
+    m_ioServer.setMasterSocket(&m_masterSocket);
 }
 
 TCPListener::TCPListener(unsigned short port, std::string ip)
@@ -28,6 +28,8 @@ TCPListener::TCPListener(unsigned short port, std::string ip)
     if (start()) {
         std::cout << "Server started successfully!" << std::endl;
     }
+//    m_masterSocket.setNonblock();
+    m_ioServer.setMasterSocket(&m_masterSocket);
 }
 
 bool TCPListener::initialize(unsigned short port = 8000, std::string ip = "")

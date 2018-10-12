@@ -1,11 +1,9 @@
-#ifndef IOSERVER_H
+﻿#ifndef IOSERVER_H
 #define IOSERVER_H
 #include "ioworker.h"
 #include <sys/epoll.h>
-#include <Sockets/mastersocket.h>
-#include <Sockets/slavesocket.h>
+#include <Sockets/socketwrapper.h>
 #include <vector>
-#include <unordered_map>
 #include <memory>
 
 class IOServer
@@ -14,35 +12,27 @@ public:
     IOServer();
     // TODO: ADD DESTRUCTOR
 
-    void addToEpoll(const sockets::SocketWrapper &descriptor) const;
-    void setMasterEvent(const sockets::SocketWrapper &socket);
+    int getRoomFromUser(const sockets::SlaveSocket &userSocket);
+//    void addToEpoll(const sockets::SocketWrapper &descriptor) const;
+    void setMasterSocket(sockets::MasterSocket *socket);
 
-    int listenEvents();
-    void proccessEvents(const int eventsCount);
-
-    void notifyClients(std::string message);
-
+//    int listenEvents();
+    void processConnections(const int eventsCount);
     void acceptConnections();
 
     void start();
 
 private:
-    void createWorkers(int count);
-    void initWorker();
+    void createWorkers(const int count);
+    void initWorker(const int channelDescriptor);
 
-    sockets::SlaveSocket m_epollSocket;
-    epoll_event m_masterEvent;
-
-    std::vector<epoll_event> m_events;
-
-    std::unordered_map<int, std::pair<std::string,
-                                      std::shared_ptr<sockets::SlaveSocket>>> m_clients;
+    std::shared_ptr<sockets::MasterSocket> m_serverSocket;
 
     std::unique_ptr<IOWorker> m_ioWorker;
-    int m_pipeChannelDescriptor;
+    std::vector<int> m_workersSockets;
 
-    const int MAX_EVENTS = 16;
-    const int BUFFER_LENGTH = 256;
+    const int MAX_CONNECTIONS = 16;
+//    std::pair<int, int> pipe;
 };
 
 #endif // IOSERVER_H
